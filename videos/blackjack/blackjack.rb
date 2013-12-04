@@ -14,13 +14,6 @@ class Card
 end
 
 describe Card do 
-	it "should have a suit" do
-		expect(Card.new(:clubs,10).suit).not_to be_nil
-	end
-	it "should have a value" do
-		expect(Card.new(:hearts, 2).value).not_to be_nil
-	end
-
 	it "should accept suit and value when building" do
 		card = Card.new(:clubs,10)
 		expect(card.suit).to eq(:clubs)
