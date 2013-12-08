@@ -58,9 +58,55 @@ describe Game do
 	it "should have a status" do
 		expect(Game.new.status).to_not be_nil
 	end
+
+	it "should hit when i tell it" do
+		game = Game.new
+		game.hit
+		expect(game.player_hand.cards.length).to eq(3)
+	end
+
+	it "should play the dealer hand when i stand" do
+	  game = Game.new
+	  game.stand
+	  expect(game.status[:winner]).to_not be_nil
+	end
+
+	# it "should determine winner if player busts on hit" do
+	# 	# deck = double(:deck,:cards => [Card.new(:hearts,8),Card.new(:diamonds,9)])
+	# 	game = Game.new
+	# 	hand = double(:hand, :cards => [Card.new(:hearts,'a'),Card.new(:diamonds,9)])
+	# 	expect(game.hit).to_not be_nil
+	# end
+
+	describe "#determine_winner" do
+		it "should have dealer win when player busts" do
+		  expect(Game.new.determine_winner(22,15)).to eq(:dealer)
+		end
+
+		it "should have player win if dealer busts" do
+			expect(Game.new.determine_winner(15,22)).to eq(:player)
+		end
+
+		it "should have player win if player >dealer" do
+			expect(Game.new.determine_winner(18,16)).to eq(:player)
+		end
+
+		it "should have push if tie" do
+			expect(Game.new.determine_winner(16,16)).to eq(:push)
+		end
+
+	end
 end
 
 describe Hand do
+
+	it "should take from the top of the deck" do
+	  	deck = double(:deck,:cards => [Card.new(:hearts,8),Card.new(:diamonds,9)])
+	  	hand = Hand.new
+	 	hand.hit!(deck)
+	  	expect(hand.value).to eq(8)
+	end
+
 	it "should return status 5 for cards 2-hearts and 3-diamonds" do
 		hand = Hand.new
 		# hand.cards.concat([Card.new(:hearts,2),Card.new(:diamonds,3)])
@@ -88,6 +134,34 @@ describe Hand do
 		hand = Hand.new
 		2.times {hand.hit!(deck)}
 		expect(deck.cards.include?(hand.cards.each {|card|})).to eq(false)
+	end
+
+	describe "#play_as_dealer" do
+	  it "should hit below 16" do
+	  	deck = double(:deck,:cards => [Card.new(:hearts,2),Card.new(:diamonds,3),Card.new(:clubs, 2), Card.new(:hearts, 9)])
+	  	hand = Hand.new
+	  	2.times {hand.hit!(deck)}
+	  	hand.play_as_dealer(deck)
+	  	expect(hand.value).to eq(16)
+	  end
+
+	  it "should not hit above 16" do
+	  	deck = double(:deck,:cards => [Card.new(:hearts,8),Card.new(:diamonds,9)])
+	  	hand = Hand.new
+	  	2.times {hand.hit!(deck)}
+	  	hand.play_as_dealer(deck)
+	  	expect(hand.value).to eq(17)
+	  end
+
+	  it "should stop on 21" do 
+	  	deck = double(:deck,:cards => [Card.new(:hearts,4),
+	  								   Card.new(:diamonds,7),
+	  								   Card.new(:clubs,'k')])
+	  	hand = Hand.new
+	  	2.times {hand.hit!(deck)}
+	  	hand.play_as_dealer(deck)
+	  	expect(hand.value).to be >= 16
+	  end
 	end
 
 end

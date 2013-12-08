@@ -19,7 +19,7 @@ class Card
 		return @value
 	end
 
-	def to_s
+	def inspect
 		"#{@value.is_a?(String) ? @value.capitalize : @value}-#{@suit.capitalize}"
 	end
 end
@@ -43,7 +43,7 @@ class Deck
 end
 
 class Game
-	attr_reader :player_hand, :dealer_hand
+	attr_reader :player_hand, :dealer_hand, :status
 	def initialize
 		@deck = Deck.new
 		@player_hand = Hand.new
@@ -52,11 +52,47 @@ class Game
 		2.times {@dealer_hand.hit!(@deck)}
 	end
 
+	def hit
+		@player_hand.hit!(@deck)
+		inspect
+		# if @player_hand.value > 21
+		# 	determine_winner(@player_hand.value,@dealer_hand.value)
+		# end
+	end
+
+	def stand
+		@dealer_hand.play_as_dealer(@deck)
+		@winner = determine_winner(@player_hand.value,@dealer_hand.value)
+		@winner.to_s + "! " + inspect + " Dealer Hand: #{@dealer_hand.cards.each {|card| card}}, Value: #{@dealer_hand.value}"
+	end
+
+	
+
+	def determine_winner(player_value,dealer_value)
+		return :dealer if player_value > 21
+		return :player if dealer_value > 21
+		if player_value == dealer_value
+			:push
+		elsif player_value > dealer_value
+			:player
+		else
+			:dealer
+		end
+	end
+
+	def inspect
+		cards = @player_hand.cards
+		"Player Hand: #{cards.each {|card| card}}, value: #{@player_hand.value}"
+	end
+
+	private
+
 	def status
 		{:player_card => @player_hand.cards,
 		 :player_value => @player_hand.value,
 		 :dealer_card => @dealer_hand.cards,
-		 :dealer_value => @dealer_hand.value
+		 :dealer_value => @dealer_hand.value,
+		 :winner => @winner
 		}
 	end
 end
@@ -70,12 +106,20 @@ class Hand
 	end
 
 	def hit!(deck)
-		@cards << deck.cards.pop
+		@cards << deck.cards.shift
 	end
 
 	def value 
 		cards.inject(0){ |sum, card| sum += card.value }
 	end
+
+	def play_as_dealer(deck)
+		if value < 16
+			hit!(deck)
+			play_as_dealer(deck)
+		end
+	end
+
 
 end
 
