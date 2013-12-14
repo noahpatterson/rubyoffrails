@@ -1,13 +1,14 @@
 require "open-uri"
 require "json"
 require_relative "./movie"
+require_relative "./api_key"
 
 
 class	MovieApi
-	API_KEY = "q7v6khrbnqjdfanzn7u2cysx"
-
+	
+	API_KEY_LOCAL = API_KEY
 	def self.search_by_title(title)
-		url ="http://api.rottentomatoes.com/api/public/v1.0/movies.json?apikey=#{API_KEY}&q=#{URI.encode(title)}&page_limit=1"
+		url ="http://api.rottentomatoes.com/api/public/v1.0/movies.json?apikey=#{API_KEY_LOCAL}&q=#{URI.encode(title)}&page_limit=1"
 		first_movie = get_url_as_json(url).fetch("movies").first
 		store_movie(OpenStruct.new(first_movie))
 	end
