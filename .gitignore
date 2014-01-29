@@ -1,1 +1,27 @@
-api_key.rb
+
+
+
+*.gem
+*.rbc
+.bundle
+.config
+coverage
+InstalledFiles
+lib/bundler/man
+pkg
+rdoc
+spec/reports
+test/tmp
+test/version_tmp
+tmp
+
+# YARD artifacts
+.yardoc
+_yardoc
+doc/
+*.swp
+*.swo
+
+config/database.yml
+TODO
+>>>>>>> 7569256c2221cc248d721e0abb20c3e77e6926eb

@@ -37,6 +37,6 @@ puts new_array2
 klass =  File.open("models/widget.rb", "r") { |file| file.read }
 eval(klass) #eval loads the code in the file
 
-puts Widget.new.instpect
+puts Widget.new.inspect
 
 puts "Serenity now!"
