@@ -1,0 +1,26 @@
+@import "bourbon/bourbon";
+@import "settings/grid-settings";
+@import "neat/neat";
+
+
+div.container {
+  @include outer-container;
+}
+
+.four {
+  @include span-columns(4);
+  border: 1px solid #555;
+  height: 4em;
+}
+
+.eight {
+  @include span-columns(8);
+    border: 1px solid #555;
+  height: 6em;
+
+}
+.four-of-eight {
+  @include span-columns(4 of 8);
+    border: 1px solid #555;
+  height: 4em;
+}
